@@ -4,10 +4,13 @@ package org.team696.TCS34725;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class TCS34725 {
   private I2C i2c;
   private String name;
-
+  private static final Logger logger = LogManager.getLogger(TCS34725.class);
   // I2C constants
   @SuppressWarnings("unused")
   public static final class I2C_constants {
@@ -100,8 +103,7 @@ public class TCS34725 {
    */
   public int init(IntegrationTime intTime, Gain gain) {
     sensor_initalized = false;
-    // TODO: logging
-    //System.out.print("Initalizing Color Sensor...");
+    logger.debug("Initalizing Color Sensor...");
 
     byte[] whoamiResponse = new byte[1];
     whoamiResponse[0] = 0x00;
@@ -109,9 +111,7 @@ public class TCS34725 {
     // Check we're actually connected to the sensor
     i2c.read(I2C_constants.TCS34725_ID, 1, whoamiResponse);
     if ((whoamiResponse[0] != 0x44) && (whoamiResponse[0] != 0x10)) {
-      // TODO: logging
-      // System.out.println("\nError - whoami register mismatch on Color Sensor!
-      // Cannot Initalize!");
+      logger.error("whoami register mismatch on Color Sensor! Cannot Initalize!");
       return -1;
     }
 
@@ -148,8 +148,7 @@ public class TCS34725 {
     //Turn on LED
     setLED(true);
 
-    // TODO: logging
-    // System.out.println("done!");
+    logger.debug("Successfully initialized color sensor.");
     sensor_initalized = true;
     return 0;
 
@@ -237,9 +236,7 @@ public class TCS34725 {
 
     // Don't bother doing anything if the sensor isn't initialized
     if (!sensor_initalized) {
-      // TODO: logging
-      // System.out.println("Error: Attempt to read from color sensor, but it's not
-      // initalized!");
+      logger.error("Attempted to read from color sensor, but it's not initalized!");
       return -1;
     }
 
@@ -247,10 +244,7 @@ public class TCS34725 {
     // (this gets reset to a different value if the sensor is power-cycled)
     i2c.read(I2C_constants.TCS34725_ENABLE, 1, enable_test_buf);
     if (enable_test_buf[0] != (I2C_constants.TCS34725_ENABLE_PON | I2C_constants.TCS34725_ENABLE_AEN)) {
-      // TODO: logging
-      // System.out.println(
-      // "Error: Attempt to read from color sensor, but the enable register did not
-      // read as expected! Sensor has probably been reset.");
+      logger.error("Attempt to read from color sensor, but the enable register did not read as expected! Sensor has probably been reset.");
       sensor_initalized = false;
       good_data_read = false;
       return -1;

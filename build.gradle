@@ -31,7 +31,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.team696:TCA9548ADriver:0.1'
     testCompile 'org.mockito:mockito-core:3.2.4'
+    compile 'org.apache.logging.log4j:log4j-core:2.13.0'
 }
 
 group = 'org.team696'
-version = '0.2'
+version = '0.3'
